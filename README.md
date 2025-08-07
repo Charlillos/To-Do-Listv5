@@ -128,5 +128,3 @@
       new Audio("https://tinyurl.com/applause-sound").play();
     }
   </script>
-</body>
-</html>
