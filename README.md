@@ -2,151 +2,131 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Tareas</title>
-
-  <!-- Fuente decorativa y moderna -->
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;700&display=swap" rel="stylesheet">
-
+  <title>Entregadas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Rajdhani:wght@400;700&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
     }
 
-    html, body {
+    body {
       margin: 0;
-      padding: 0;
-      height: 100%;
+      padding: 2rem;
       font-family: 'Rajdhani', sans-serif;
-      background-color: #0d1b2a;
-      color: #ffffff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      background:
-        radial-gradient(circle at 20% 30%, rgba(0, 191, 255, 0.15), transparent 200px),
-        radial-gradient(circle at 80% 60%, rgba(255, 105, 180, 0.15), transparent 250px),
-        radial-gradient(circle at 50% 80%, rgba(255, 255, 255, 0.1), transparent 150px);
-      animation: bgFloat 20s infinite linear;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    @keyframes bgFloat {
-      0% { background-position: 0 0, 0 0, 0 0; }
-      100% { background-position: 1000px 1000px, -800px -800px, 500px 500px; }
-    }
-
-    .container {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 3rem;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+      background: linear-gradient(to right, #1f4037, #99f2c8);
+      color: #fff;
       text-align: center;
-      width: 90%;
-      max-width: 600px;
-      z-index: 1;
+      min-height: 100vh;
       position: relative;
     }
 
     h2 {
-      font-size: 2.2rem;
-      color: #00d4ff;
-      margin-bottom: 1.5rem;
+      font-family: 'Pacifico', cursive;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: #ffe600;
+      text-shadow: 2px 2px #000;
     }
 
-    ul {
-      list-style: none;
-      padding: 0;
-      text-align: left;
-    }
-
-    li {
-      background-color: rgba(255, 255, 255, 0.08);
-      padding: 1rem;
-      margin-bottom: 0.8rem;
-      border-left: 5px solid #00d4ff;
-      border-radius: 6px;
+    .entregada {
+      background-color: rgba(255, 255, 255, 0.1);
+      margin: 1rem auto;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      max-width: 600px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      opacity: 0.8;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     }
 
-    li:first-child {
-      border-left-color: #ff5050;
-    }
-
-    li span {
-      flex: 1;
-      margin-right: 1rem;
-    }
-
-    button {
-      background-color: #00d4ff;
+    .entregada button {
+      background-color: #ff6b6b;
+      color: white;
       border: none;
-      color: #000;
-      padding: 0.5rem 1rem;
+      padding: 0.4rem 1rem;
       border-radius: 6px;
       font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .entregada button:hover {
+      background-color: #ff3b3b;
+    }
+
+    .volver-btn {
+      margin-top: 2rem;
+      padding: 0.7rem 1.5rem;
+      background-color: #ffe600;
+      color: #333;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
 
-    button:hover {
-      background-color: #00a8cc;
+    .volver-btn:hover {
+      background-color: #ffdd00;
     }
 
-    .volver {
-      margin-top: 2rem;
-      background-color: #ff7eb9;
+    .confetti {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      background: url('https://tinyurl.com/confetti-image') center/cover no-repeat;
+      animation: fadeIn 2s forwards;
+      opacity: 0;
+      z-index: 0;
     }
 
-    .volver:hover {
-      background-color: #ff4da6;
+    @keyframes fadeIn {
+      to { opacity: 0.25; }
     }
   </style>
 </head>
 <body>
-
-  <div class="container">
-    <h2>Listado de tareas</h2>
-    <ul id="lista"></ul>
-    <button class="volver">Volver</button> 
-  <button>Siguiente</button>
-  </div>
+  <h2>Tareas Entregadas</h2>
+  <div id="entregadas"></div>
+  <a href="https://charlillos.github.io/To-Do-Listv3/"><button>Volver</button>
 
   <script>
-    const lista = document.getElementById("lista");
+    const cont = document.getElementById("entregadas");
     const tareas = JSON.parse(localStorage.getItem("tareas") || "[]");
 
-    // Ordenar por fecha más próxima
-    tareas.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+    tareas
+      .filter(t => t.entregada)
+      .forEach(t => {
+        const div = document.createElement("div");
+        div.className = "entregada";
+        const span = document.createElement("span");
+        span.textContent = `[${t.materia}] - ${t.tarea} (${t.fecha})`;
 
-    tareas.forEach((t, i) => {
-  const li = document.createElement("li");
-  const prioridad = i === 0 ? "🔴" : "⏳";
-  li.textContent = `${prioridad} [${t.materia}] - ${t.tarea} (${t.fecha})`;
+        const del = document.createElement("button");
+        del.textContent = "Eliminar";
+        del.onclick = () => {
+          const rem = JSON.parse(localStorage.getItem("tareas"));
+          const nf = rem.filter(a =>
+            !(a.materia === t.materia && a.tarea === t.tarea && a.fecha === t.fecha)
+          );
+          localStorage.setItem("tareas", JSON.stringify(nf));
+          location.reload();
+        };
 
-  const btn = document.createElement("button");
-  btn.textContent = t.entregada ? "✅" : "Entregada";
-  
-  btn.onclick = () => {
-    tareas[i].entregada = true;
-    localStorage.setItem("tareas", JSON.stringify(tareas));
-    btn.textContent = "✅"; // Aquí está el cambio clave
-  };
+        div.appendChild(span);
+        div.appendChild(del);
+        cont.appendChild(div);
+      });
 
-  li.appendChild(btn);
-  lista.appendChild(li);
-});
+    if (cont.children.length) {
+      const conf = document.createElement("div");
+      conf.className = "confetti";
+      document.body.appendChild(conf);
+      new Audio("https://tinyurl.com/applause-sound").play();
+    }
   </script>
-
 </body>
 </html>
